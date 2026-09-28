@@ -204,6 +204,72 @@
   }
 
 </style>
+
+<style>
+/* ==========================================================
+   قسم الأدوات التفاعلية — إضافة مستقلة لا تعدّل أي قاعدة موجودة
+   ========================================================== */
+@property --tc-ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:44px}
+.tool-card{
+  --rx:0deg;--ry:0deg;--ty:0px;--mx:50%;--my:0%;
+  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:410px;
+  padding:34px 30px 30px;border-radius:32px;overflow:hidden;isolation:isolate;
+  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--glass-edge);box-shadow:0 22px 46px -30px var(--c);
+  transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--ty));
+  transition:transform .25s ease-out,box-shadow .3s,border-color .3s;
+}
+/* ضوء يتبع المؤشر */
+.tool-card::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .3s;
+  background:radial-gradient(380px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 26%,transparent),transparent 70%)}
+/* إطار متدرّج يدور ببطء */
+.tool-card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;
+  background:conic-gradient(from var(--tc-ang),var(--c),transparent 32%,transparent 68%,var(--c));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  opacity:.5;transition:opacity .3s;animation:tcSpin 7s linear infinite}
+@keyframes tcSpin{to{--tc-ang:360deg}}
+.tc-sheen{position:absolute;inset:0;z-index:-1;pointer-events:none;transform:translateX(-130%);
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%)}
+@keyframes tcSheen{to{transform:translateX(130%)}}
+.tc-mark{position:absolute;z-index:-1;inset-inline-end:-38px;bottom:-44px;width:270px;height:270px;stroke:var(--c);fill:none;
+  stroke-width:.6;stroke-linecap:round;stroke-linejoin:round;opacity:.17;transition:transform .7s ease,opacity .4s}
+.tc-num{position:absolute;inset-block-start:20px;inset-inline-end:26px;direction:ltr;font-family:var(--display);font-weight:800;
+  font-size:58px;line-height:1;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--c) 75%,transparent)}
+.tool-card .gorb{--sz:84px;margin-bottom:6px;animation:tcFloat 6s ease-in-out infinite;animation-delay:calc(var(--i) * -1.7s)}
+.tool-card .gorb::before{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--c);opacity:0;
+  animation:tcRing 3.4s ease-out infinite;animation-delay:calc(var(--i) * -.9s)}
+@keyframes tcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes tcRing{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+.tc-type{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:999px;
+  font-family:var(--display);font-weight:600;font-size:13.5px;color:color-mix(in srgb,var(--c) 60%,#14173A);
+  background:color-mix(in srgb,var(--c) 13%,#fff);border:1px solid color-mix(in srgb,var(--c) 30%,#fff)}
+.tc-type::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 0 var(--c);animation:tcDot 2s ease-out infinite}
+@keyframes tcDot{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 60%,transparent)}100%{box-shadow:0 0 0 9px transparent}}
+.tool-card h3{font-family:var(--display);font-weight:900;font-size:clamp(23px,2.3vw,30px);line-height:1.45}
+.tool-card p{color:var(--muted);font-size:16.5px;line-height:1.85;flex:1}
+.tc-cta{margin-top:auto;display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:15px;color:#fff;
+  font-family:var(--display);font-weight:600;font-size:15.5px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--c) 78%,#14173A),color-mix(in srgb,var(--c) 88%,#6D4BFF));
+  box-shadow:0 14px 26px -14px var(--c);transition:box-shadow .3s,transform .3s}
+.tc-cta svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+@media(hover:hover){
+  .tool-card:is(:hover,:focus-visible){--ty:-10px;border-color:color-mix(in srgb,var(--c) 55%,#fff);box-shadow:0 36px 62px -28px var(--c)}
+  .tool-card:is(:hover,:focus-visible)::before{opacity:1}
+  .tool-card:is(:hover,:focus-visible)::after{opacity:1}
+  .tool-card:is(:hover,:focus-visible) .tc-sheen{animation:tcSheen .9s ease}
+  .tool-card:is(:hover,:focus-visible) .tc-mark{transform:rotate(-9deg) scale(1.1);opacity:.3}
+  .tool-card:is(:hover,:focus-visible) .tc-cta{box-shadow:0 20px 32px -12px var(--c);transform:translateY(-2px)}
+  .tool-card:is(:hover,:focus-visible) .tc-cta svg{transform:translate(3px,-3px)}
+}
+/* ظهور تدريجي عند التمرير (يُفعَّل من الجافاسكربت فقط) */
+.tool-card.pre{opacity:0}
+.tool-card.in{animation:tcIn .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 130ms)}
+@keyframes tcIn{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
+@media(max-width:620px){.tools-grid{grid-template-columns:1fr}.tool-card{min-height:0}}
+@media(prefers-reduced-motion:reduce){.tool-card::after{animation:none!important}}
+</style>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"></div>
@@ -346,6 +412,49 @@
   </div>
 </section>
 
+<!-- Tools -->
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="gorb" style="--c:#FF4D8D"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6 2-2 6z"/></svg></span>
+      <div><div class="en" data-t="tools.en"></div><h2 class="sec-title" data-t="tools.title"></h2></div>
+    </div>
+    <p class="sec-sub" data-t="tools.sub"></p>
+    <div class="tools-grid" id="toolsGrid">
+      <a class="tool-card" href="https://moustafaahussien.github.io/EQ_test_v03/" target="_blank" rel="noopener" style="--c:#FF4D8D;--i:0">
+        <span class="tc-sheen" aria-hidden="true"></span>
+        <svg class="tc-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.2"/></svg>
+        <span class="tc-num" aria-hidden="true">01</span>
+        <span class="gorb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.2"/></svg></span>
+        <span class="tc-type" data-t="tools.items.0.type"></span>
+        <h3 data-t="tools.items.0.name"></h3>
+        <p data-t="tools.items.0.desc"></p>
+        <span class="tc-cta"><span data-t="tools.open"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+      </a>
+      <a class="tool-card" href="https://moustafaahussien.github.io/PPP-TIE-Arabic/" target="_blank" rel="noopener" style="--c:#16B8E0;--i:1">
+        <span class="tc-sheen" aria-hidden="true"></span>
+        <svg class="tc-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19h20M4 19c0-6 3-10 8-10s8 4 8 10M8 19v-6M12 19V9M16 19v-6"/></svg>
+        <span class="tc-num" aria-hidden="true">02</span>
+        <span class="gorb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19h20M4 19c0-6 3-10 8-10s8 4 8 10M8 19v-6M12 19V9M16 19v-6"/></svg></span>
+        <span class="tc-type" data-t="tools.items.1.type"></span>
+        <h3 data-t="tools.items.1.name"></h3>
+        <p data-t="tools.items.1.desc"></p>
+        <span class="tc-cta"><span data-t="tools.open"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+      </a>
+      <a class="tool-card" href="https://moustafaahussien.github.io/EQ_SmartDetector/" target="_blank" rel="noopener" style="--c:#7B5CFF;--i:2">
+        <span class="tc-sheen" aria-hidden="true"></span>
+        <svg class="tc-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 15s1 1.5 3 1.5 3-1.5 3-1.5M9.5 10h.01M14.5 10h.01"/></svg>
+        <span class="tc-num" aria-hidden="true">03</span>
+        <span class="gorb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 15s1 1.5 3 1.5 3-1.5 3-1.5M9.5 10h.01M14.5 10h.01"/></svg></span>
+        <span class="tc-type" data-t="tools.items.2.type"></span>
+        <h3 data-t="tools.items.2.name"></h3>
+        <p data-t="tools.items.2.desc"></p>
+        <span class="tc-cta"><span data-t="tools.open"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- Gallery -->
 <section id="gallery">
   <div class="wrap">
@@ -383,7 +492,7 @@
 const DRIVE_FOLDER_ID = "1mOdekT0r1W4XKaYObalcShZ2epPDLE80";  // ضع هنا ID فولدر هذا البرنامج على جوجل درايف
 const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfxAx1ycEtUMsRimwK-ggzx-MI7qaWgrQJg5vAvEG20qsngp9Nv1GPrsFOL0uqUhQOVw/exec"; // رابط سكريبت Google Apps المنتهي بـ /exec (نفسه في كل الصفحات)
 
-const I18N = {"ar": {"meta": {"title": "الذكاء العاطفي | وحدة مهارات القرن 21", "description": "بناء وعي الطالب بذاته ومشاعره، وتنمية قدرته على إدارة انفعالاته وفهم الآخرين وبناء علاقات أكثر إيجابية."}, "nav": {"home": "الرئيسية", "about": "عن الوحدة", "why": "لماذا الوحدة؟", "programs": "البرامج", "journey": "الرحلة", "achievements": "الإنجازات", "gallery": "المعرض"}, "hero": {"name": "الذكاء العاطفي", "altName": "Emotional Intelligence", "num": "برنامج 01", "tagline": "اعرف نفسك • اختر نفسك • امنح نفسك", "cta1": "تعرّف على البرنامج", "cta2": "كل البرامج"}, "about": {"title": "عن البرنامج", "en": "About the Program", "desc": "الذكاء العاطفي هو القدرة على التعرف على مشاعرنا ومشاعر الآخرين، وفهم أثرها، واستخدام هذا الفهم لتوجيه السلوك والتفاعلات. في هذا البرنامج، يتعلم الطلاب كيف يفهمون أنفسهم أعمق، وكيف يديرون انفعالاتهم في المواقف المختلفة، وكيف يبنون علاقات إيجابية مع من حولهم. البرنامج لا يقتصر على المعرفة النظرية، بل يرتبط بتجارب حقيقية يعيشها الطالب يومياً في المدرسة والبيت والمجتمع."}, "why": {"title": "لماذا نُدرّس هذا البرنامج؟", "en": "Why It Matters", "desc": "الذكاء العاطفي ليس مهارة ناعمة ثانوية — بل هو الأساس الذي تقوم عليه كل المهارات الأخرى. الطالب الذي يفهم مشاعره ويديرها يستطيع أن يتعلم أفضل، ويتعاون بفعالية، ويقود بثقة، ويتعامل مع التحديات دون أن ينهار. الأبحاث تؤكد أن الذكاء العاطفي يساهم بنسبة كبيرة في النجاح الأكاديمي والمهني والاجتماعي."}, "objectives": {"title": "الأهداف", "en": "Objectives", "items": ["تنمية الوعي الذاتي والقدرة على التعرف على المشاعر", "تطوير مهارات إدارة الانفعالات والضغوط", "بناء مهارات التعاطف وفهم وجهات نظر الآخرين", "تعزيز مهارات التواصل الفعال وبناء العلاقات", "تنمية القدرة على اتخاذ القرارات المسؤولة", "بناء مفهوم إيجابي للذات والثقة بالنفس"]}, "outcomes": {"title": "مخرجات تعلّم الطالب", "en": "Student Outcomes", "items": ["طالب واعٍ بمشاعره وقادر على التعبير عنها بشكل صحي", "قدرة على إدارة الغضب والقلق والضغط النفسي", "مهارات تعاطف وفهم لمشاعر الزملاء والمعلمين", "علاقات إيجابية وبناءة مع المحيط", "ثقة بالنفس وقدرة على القيادة والمبادرة", "صحة نفسية أفضل ومقاومة للتحديات"]}, "journey": {"title": "رحلة التعلّم", "en": "Learning Journey", "steps": ["الوعي الذاتي — معرفة الذات والمشاعر", "إدارة الذات — تنظيم الانفعالات والسلوك", "الوعي الاجتماعي — فهم الآخرين والتعاطف", "إدارة العلاقات — بناء التواصل والتعاون", "التطبيق — ممارسة المهارات في مواقف حقيقية"]}, "activities": {"title": "الأنشطة", "en": "Activities", "items": ["ورش التعبير عن المشاعر بالفن والكتابة", "تمارين التأمل والاسترخاء والوعي الذاتي", "أدوار تمثيلية لمواقف اجتماعية متنوعة", "مشاريع خدمة مجتمعية تعزز التعاطف", "جلسات نقاشية مفتوحة حول التحديات", "يوميات الانعكاس الذاتي والتقييم المستمر"]}, "projects": {"title": "المشاريع", "en": "Projects", "items": ["مشروع «رسالة لذاتي» — رسائل إيجابية للنفس", "مشروع «فهم الآخر» — دراسة تجارب مختلفة", "مبادرة «ال Kindness Challenge» — تحدي اللطف", "مشروع «خريطة المشاعر» — تتبع وتحليل المشاعر"]}, "gallery": {"title": "معرض الصور والفيديوهات", "en": "Gallery", "sub": "صور وفيديوهات من قلب البرنامج والفعاليات."}, "back": "العودة لمنظومة البرامج", "footer": {"name": "وحدة مهارات القرن 21", "by": "إعداد وإشراف: اسم مسؤول الوحدة"}, "band": ["التفكير الناقد", "الإبداع", "التعاون", "التواصل", "حل المشكلات", "الابتكار", "ريادة الأعمال", "القيادة"]}, "en": {"meta": {"title": "Emotional Intelligence | 21st Century Skills Unit", "description": "Building students' awareness of themselves and their emotions, and developing their ability to manage feelings, understand others, and build more positive relationships."}, "nav": {"home": "Home", "about": "About", "why": "Why?", "programs": "Programs", "journey": "Journey", "achievements": "Achievements", "gallery": "Gallery"}, "hero": {"name": "Emotional Intelligence", "altName": "الذكاء العاطفي", "num": "Program 01", "tagline": "Know Yourself • Choose Yourself • Give Yourself", "cta1": "Learn More", "cta2": "All Programs"}, "about": {"title": "About the Program", "en": "About the Program", "desc": "Emotional Intelligence is the ability to recognize our own feelings and those of others, understand their impact, and use this understanding to guide behavior and interactions. In this program, students learn to understand themselves more deeply, manage their emotions in different situations, and build positive relationships with those around them."}, "why": {"title": "Why We Teach This Program", "en": "Why It Matters", "desc": "Emotional Intelligence is not a soft secondary skill — it is the foundation upon which all other skills are built. A student who understands and manages their emotions can learn better, collaborate effectively, lead with confidence, and face challenges without breaking down. Research confirms that emotional intelligence contributes significantly to academic, professional, and social success."}, "objectives": {"title": "Objectives", "en": "Objectives", "items": ["Developing self-awareness and the ability to recognize emotions", "Developing emotion and stress management skills", "Building empathy and understanding others' perspectives", "Enhancing effective communication and relationship-building", "Developing the ability to make responsible decisions", "Building a positive self-concept and self-confidence"]}, "outcomes": {"title": "Student Outcomes", "en": "Student Outcomes", "items": ["A student aware of their emotions and able to express them healthily", "Ability to manage anger, anxiety, and psychological pressure", "Empathy skills and understanding of peers' and teachers' feelings", "Positive and constructive relationships with their environment", "Self-confidence and ability to lead and take initiative", "Better mental health and resilience to challenges"]}, "journey": {"title": "Learning Journey", "en": "Learning Journey", "steps": ["Self-Awareness — knowing oneself and emotions", "Self-Management — regulating emotions and behavior", "Social Awareness — understanding others and empathy", "Relationship Management — building communication and cooperation", "Application — practicing skills in real situations"]}, "activities": {"title": "Activities", "en": "Activities", "items": ["Workshops on expressing emotions through art and writing", "Meditation, relaxation, and self-awareness exercises", "Role-playing diverse social situations", "Community service projects that enhance empathy", "Open discussion sessions about challenges", "Self-reflection journals and continuous assessment"]}, "projects": {"title": "Projects", "en": "Projects", "items": ["Project 'A Letter to Myself' — positive self-messages", "Project 'Understanding Others' — studying diverse experiences", "Initiative 'Kindness Challenge'", "Project 'Emotion Map' — tracking and analyzing emotions"]}, "gallery": {"title": "Gallery", "en": "Gallery", "sub": "Photos and videos from the heart of the program and events."}, "back": "Back to Programs", "footer": {"name": "21st Century Skills Unit", "by": "Prepared and supervised by: Unit Lead Name"}, "band": ["Critical Thinking", "Creativity", "Collaboration", "Communication", "Problem Solving", "Innovation", "Entrepreneurship", "Leadership"]}};
+const I18N = {"ar": {"meta": {"title": "الذكاء العاطفي | وحدة مهارات القرن 21", "description": "بناء وعي الطالب بذاته ومشاعره، وتنمية قدرته على إدارة انفعالاته وفهم الآخرين وبناء علاقات أكثر إيجابية."}, "nav": {"home": "الرئيسية", "about": "عن الوحدة", "why": "لماذا الوحدة؟", "programs": "البرامج", "journey": "الرحلة", "achievements": "الإنجازات", "gallery": "المعرض"}, "hero": {"name": "الذكاء العاطفي", "altName": "Emotional Intelligence", "num": "برنامج 01", "tagline": "اعرف نفسك • اختر نفسك • امنح نفسك", "cta1": "تعرّف على البرنامج", "cta2": "كل البرامج"}, "about": {"title": "عن البرنامج", "en": "About the Program", "desc": "الذكاء العاطفي هو القدرة على التعرف على مشاعرنا ومشاعر الآخرين، وفهم أثرها، واستخدام هذا الفهم لتوجيه السلوك والتفاعلات. في هذا البرنامج، يتعلم الطلاب كيف يفهمون أنفسهم أعمق، وكيف يديرون انفعالاتهم في المواقف المختلفة، وكيف يبنون علاقات إيجابية مع من حولهم. البرنامج لا يقتصر على المعرفة النظرية، بل يرتبط بتجارب حقيقية يعيشها الطالب يومياً في المدرسة والبيت والمجتمع."}, "why": {"title": "لماذا نُدرّس هذا البرنامج؟", "en": "Why It Matters", "desc": "الذكاء العاطفي ليس مهارة ناعمة ثانوية — بل هو الأساس الذي تقوم عليه كل المهارات الأخرى. الطالب الذي يفهم مشاعره ويديرها يستطيع أن يتعلم أفضل، ويتعاون بفعالية، ويقود بثقة، ويتعامل مع التحديات دون أن ينهار. الأبحاث تؤكد أن الذكاء العاطفي يساهم بنسبة كبيرة في النجاح الأكاديمي والمهني والاجتماعي."}, "objectives": {"title": "الأهداف", "en": "Objectives", "items": ["تنمية الوعي الذاتي والقدرة على التعرف على المشاعر", "تطوير مهارات إدارة الانفعالات والضغوط", "بناء مهارات التعاطف وفهم وجهات نظر الآخرين", "تعزيز مهارات التواصل الفعال وبناء العلاقات", "تنمية القدرة على اتخاذ القرارات المسؤولة", "بناء مفهوم إيجابي للذات والثقة بالنفس"]}, "outcomes": {"title": "مخرجات تعلّم الطالب", "en": "Student Outcomes", "items": ["طالب واعٍ بمشاعره وقادر على التعبير عنها بشكل صحي", "قدرة على إدارة الغضب والقلق والضغط النفسي", "مهارات تعاطف وفهم لمشاعر الزملاء والمعلمين", "علاقات إيجابية وبناءة مع المحيط", "ثقة بالنفس وقدرة على القيادة والمبادرة", "صحة نفسية أفضل ومقاومة للتحديات"]}, "journey": {"title": "رحلة التعلّم", "en": "Learning Journey", "steps": ["الوعي الذاتي — معرفة الذات والمشاعر", "إدارة الذات — تنظيم الانفعالات والسلوك", "الوعي الاجتماعي — فهم الآخرين والتعاطف", "إدارة العلاقات — بناء التواصل والتعاون", "التطبيق — ممارسة المهارات في مواقف حقيقية"]}, "activities": {"title": "الأنشطة", "en": "Activities", "items": ["ورش التعبير عن المشاعر بالفن والكتابة", "تمارين التأمل والاسترخاء والوعي الذاتي", "أدوار تمثيلية لمواقف اجتماعية متنوعة", "مشاريع خدمة مجتمعية تعزز التعاطف", "جلسات نقاشية مفتوحة حول التحديات", "يوميات الانعكاس الذاتي والتقييم المستمر"]}, "projects": {"title": "المشاريع", "en": "Projects", "items": ["مشروع «رسالة لذاتي» — رسائل إيجابية للنفس", "مشروع «فهم الآخر» — دراسة تجارب مختلفة", "مبادرة «ال Kindness Challenge» — تحدي اللطف", "مشروع «خريطة المشاعر» — تتبع وتحليل المشاعر"]}, "gallery": {"title": "معرض الصور والفيديوهات", "en": "Gallery", "sub": "صور وفيديوهات من قلب البرنامج والفعاليات."}, "back": "العودة لمنظومة البرامج", "footer": {"name": "وحدة مهارات القرن 21", "by": "إعداد وإشراف: اسم مسؤول الوحدة"}, "band": ["التفكير الناقد", "الإبداع", "التعاون", "التواصل", "حل المشكلات", "الابتكار", "ريادة الأعمال", "القيادة"], "tools": {"title": "أدوات تفاعلية", "en": "Interactive Tools", "sub": "ثلاث أدوات رقمية صمّمناها لتحوّل الذكاء العاطفي من فكرة إلى تجربة تعيشها بنفسك.", "open": "افتح الأداة", "items": [{"type": "مقياس", "name": "مقياس الذكاء العاطفي", "desc": "اكتشف مستوى ذكائك العاطفي عبر مقياس تفاعلي يمنحك صورة واضحة عن نقاط قوتك ومجالات نموّك."}, {"type": "تجربة تفاعلية", "name": "جسور التفاؤل التفاعلية", "desc": "تجربة تفاعلية تتدرّب فيها على التفكير المتفائل، وتحوّل المواقف الصعبة إلى فرص للنمو."}, {"type": "أداة ذكية", "name": "الكاشف الآلي للمشاعر", "desc": "أداة ذكية تساعدك على التعرّف على مشاعرك وتسميتها بدقّة، لتبدأ رحلة الوعي بالذات."}]}}, "en": {"meta": {"title": "Emotional Intelligence | 21st Century Skills Unit", "description": "Building students' awareness of themselves and their emotions, and developing their ability to manage feelings, understand others, and build more positive relationships."}, "nav": {"home": "Home", "about": "About", "why": "Why?", "programs": "Programs", "journey": "Journey", "achievements": "Achievements", "gallery": "Gallery"}, "hero": {"name": "Emotional Intelligence", "altName": "الذكاء العاطفي", "num": "Program 01", "tagline": "Know Yourself • Choose Yourself • Give Yourself", "cta1": "Learn More", "cta2": "All Programs"}, "about": {"title": "About the Program", "en": "About the Program", "desc": "Emotional Intelligence is the ability to recognize our own feelings and those of others, understand their impact, and use this understanding to guide behavior and interactions. In this program, students learn to understand themselves more deeply, manage their emotions in different situations, and build positive relationships with those around them."}, "why": {"title": "Why We Teach This Program", "en": "Why It Matters", "desc": "Emotional Intelligence is not a soft secondary skill — it is the foundation upon which all other skills are built. A student who understands and manages their emotions can learn better, collaborate effectively, lead with confidence, and face challenges without breaking down. Research confirms that emotional intelligence contributes significantly to academic, professional, and social success."}, "objectives": {"title": "Objectives", "en": "Objectives", "items": ["Developing self-awareness and the ability to recognize emotions", "Developing emotion and stress management skills", "Building empathy and understanding others' perspectives", "Enhancing effective communication and relationship-building", "Developing the ability to make responsible decisions", "Building a positive self-concept and self-confidence"]}, "outcomes": {"title": "Student Outcomes", "en": "Student Outcomes", "items": ["A student aware of their emotions and able to express them healthily", "Ability to manage anger, anxiety, and psychological pressure", "Empathy skills and understanding of peers' and teachers' feelings", "Positive and constructive relationships with their environment", "Self-confidence and ability to lead and take initiative", "Better mental health and resilience to challenges"]}, "journey": {"title": "Learning Journey", "en": "Learning Journey", "steps": ["Self-Awareness — knowing oneself and emotions", "Self-Management — regulating emotions and behavior", "Social Awareness — understanding others and empathy", "Relationship Management — building communication and cooperation", "Application — practicing skills in real situations"]}, "activities": {"title": "Activities", "en": "Activities", "items": ["Workshops on expressing emotions through art and writing", "Meditation, relaxation, and self-awareness exercises", "Role-playing diverse social situations", "Community service projects that enhance empathy", "Open discussion sessions about challenges", "Self-reflection journals and continuous assessment"]}, "projects": {"title": "Projects", "en": "Projects", "items": ["Project 'A Letter to Myself' — positive self-messages", "Project 'Understanding Others' — studying diverse experiences", "Initiative 'Kindness Challenge'", "Project 'Emotion Map' — tracking and analyzing emotions"]}, "gallery": {"title": "Gallery", "en": "Gallery", "sub": "Photos and videos from the heart of the program and events."}, "back": "Back to Programs", "footer": {"name": "21st Century Skills Unit", "by": "Prepared and supervised by: Unit Lead Name"}, "band": ["Critical Thinking", "Creativity", "Collaboration", "Communication", "Problem Solving", "Innovation", "Entrepreneurship", "Leadership"], "tools": {"title": "Interactive Tools", "en": "Interactive Tools", "sub": "Three digital tools we designed to turn emotional intelligence from an idea into an experience you live yourself.", "open": "Open the Tool", "items": [{"type": "Assessment", "name": "Emotional Intelligence Assessment", "desc": "Discover your emotional intelligence level through an interactive scale that gives you a clear picture of your strengths and growth areas."}, {"type": "Interactive", "name": "Interactive Optimism Bridges", "desc": "An interactive experience where you practice optimistic thinking and turn difficult situations into opportunities to grow."}, {"type": "Smart Tool", "name": "Smart Emotion Detector", "desc": "A smart tool that helps you recognize and name your feelings accurately, so you can begin your journey of self-awareness."}]}}};
 const PROGRAM_COLOR = "#FF4D8D";
 const OBJ_ICONS = ["<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\"/>", "<path d=\"M20 6L9 17l-5-5\"/>", "<path d=\"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z\"/>", "<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z\"/>", "<path d=\"M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91 0z\"/><path d=\"M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 12a22.35 22.35 0 0 1-4 1z\"/>", "<path d=\"M2 20h20M5 20V8l5-4 5 4v12M14 20v-6h4v6\"/>"];
 const OUT_ICONS = ["<path d=\"M20 6L9 17l-5-5\"/>", "<path d=\"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z\"/>", "<path d=\"M9 2v6l-4 6v8h14v-8l-4-6V2\"/><path d=\"M9 2h6\"/>", "<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z\"/>", "<path d=\"M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91 0z\"/><path d=\"M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 12a22.35 22.35 0 0 1-4 1z\"/>", "<path d=\"M2 20h20M5 20V8l5-4 5 4v12M14 20v-6h4v6\"/>"];
@@ -566,6 +675,36 @@ document.getElementById("langBtn").addEventListener("click", ()=> applyLang(LANG
   attachTilt(document);
 })();
 
+</script>
+<script>
+/* قسم الأدوات: ميلان ثلاثي الأبعاد + ضوء يتبع المؤشر + ظهور تدريجي */
+(function(){
+  const cards = [].slice.call(document.querySelectorAll(".tool-card"));
+  if(!cards.length) return;
+  if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+    cards.forEach(function(c){
+      c.addEventListener("pointermove", function(e){
+        const r = c.getBoundingClientRect();
+        const x = (e.clientX - r.left)/r.width, y = (e.clientY - r.top)/r.height;
+        c.style.setProperty("--mx", (x*100).toFixed(1)+"%");
+        c.style.setProperty("--my", (y*100).toFixed(1)+"%");
+        c.style.setProperty("--rx", ((0.5 - y)*7).toFixed(2)+"deg");
+        c.style.setProperty("--ry", ((x - 0.5)*7).toFixed(2)+"deg");
+      });
+      c.addEventListener("pointerleave", function(){ c.style.setProperty("--rx","0deg"); c.style.setProperty("--ry","0deg"); });
+    });
+  }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce && "IntersectionObserver" in window){
+    cards.forEach(function(c){ c.classList.add("pre"); });
+    const io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.remove("pre"); e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold:.15 });
+    cards.forEach(function(c){ io.observe(c); });
+  }
+})();
 </script>
 </body>
 </html>
